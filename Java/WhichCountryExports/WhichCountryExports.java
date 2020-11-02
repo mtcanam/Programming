@@ -17,9 +17,9 @@ public class WhichCountryExports {
         CSVParser parser = fr.getCSVParser();
         System.out.println(countryInfo(parser, "Nauru"));
         CSVParser parser2 = fr.getCSVParser();
-        listExportersTwoProducts(parser2, "fish", "nuts");
+        listExportersTwoProducts(parser2, "cotton", "flowers");
         CSVParser parser3 = fr.getCSVParser();
-        System.out.println(numberOfExporters(parser3, "sugar"));
+        System.out.println(numberOfExporters(parser3, "cocoa"));
         CSVParser parser4 = fr.getCSVParser();
         bigExporters(parser4, "$999,999,999,999");
     }
