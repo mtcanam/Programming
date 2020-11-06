@@ -61,4 +61,27 @@ public class CaesarCipher {
         }
         return encrypted.toString();
     }
+    
+    public int[] countLetters(String decrypt){
+        String alph = "abcdefghijklmnopqrstuvwxyz";
+        int[] counts = new int[26];
+        for(int i = 0; i < decrypt.length(); i++){
+            char ch = Character.toLowerCase(decrypt.charAt(i));
+            int dex = alph.indexOf(ch);
+            if(dex!=-1){
+                counts[dex]++;
+            }
+        }
+        return counts;
+    }
+    
+    public int maxIndex(int[] vals){
+        int maxDex = 0;
+        for(int i = 0; i < vals.length; i++){
+            if (vals[i] > vals[maxDex]){
+                maxDex = i;
+            }
+        }
+        return maxDex;
+    }
 }
