@@ -24,13 +24,16 @@ public class WordLengths {
         int maxLength = counts.length;
         int strLength = 0;
         for(String s:resource.words()){
+            System.out.println(s);
             strLength = s.length();
-            if(Character.isLetter(s.charAt(0)) == false){
-                strLength--;
-            }
+            System.out.println(strLength);
             if(Character.isLetter(s.charAt(strLength-1)) == false){
+                strLength--;                
+            }
+            if(strLength > 0 & Character.isLetter(s.charAt(0)) == false){
                 strLength--;
             }
+            
             if(strLength < maxLength){
                 counts[strLength]++;
             }else{
