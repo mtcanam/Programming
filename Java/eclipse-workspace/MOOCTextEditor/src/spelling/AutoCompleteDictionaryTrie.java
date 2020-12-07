@@ -1,7 +1,9 @@
 package spelling;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,8 +41,68 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 */
 	public boolean addWord(String word)
 	{
-	    //TODO: Implement this method.
-	    return false;
+	    String lWord = word.toLowerCase();
+	    int wordLen = word.length();
+	    boolean newNodes = false;
+	    boolean newEnd = false;
+	    boolean newWord = false;
+	    
+	    //Make sure that the word is not nothing
+	    if(wordLen == 0) {
+	    	throw new NullPointerException();
+	    }else if(wordLen == 1) {
+	    	char c = lWord.charAt(0);
+	    	TrieNode currNode = root;
+	    	//Try to insert the character (which is the full string) as a root child.
+		    if(currNode.getValidNextCharacters().contains(c)) {
+	    		//This character is already a subnode of the parent, just get it
+	    		currNode = currNode.getChild(c);
+	    	}else {
+	    		//This character is new, we need to add it
+	    		//Since there's a new character, we need to mark that there were new nodes added
+	    		currNode = currNode.insert(c);
+	    		newNodes = true;
+	    	}
+    		newEnd = !currNode.endsWord();
+    		if(newNodes || newEnd) {
+    			newWord = true;
+    			currNode.setEndsWord(true);
+    		}
+	    }
+	    //Try to insert the character as a root child.
+	    TrieNode currNode = root.insert(lWord.charAt(0));
+	    //if this is null, we can just get the node from 
+	    if (currNode == null) {
+	    	currNode = root.getChild(lWord.charAt(0));
+	    }
+	    for (int i = 1; i < wordLen; i++) {
+	    	char c = lWord.charAt(i);
+	    	//For each character, try to add it as a child node of the previous character
+	    	//If we get null, we need to get instead, since that node already existed
+	    	if(currNode.getValidNextCharacters().contains(c)) {
+	    		//This character is already a subnode of the parent, just get it
+	    		currNode = currNode.getChild(c);
+	    	}else {
+	    		//This character is new, we need to add it
+	    		//Since there's a new character, we need to mark that there were new nodes added
+	    		currNode = currNode.insert(c);
+	    		newNodes = true;
+	    	}
+	    	//At this point, we know whether any new nodes were added. The two conditions on a new word are either new nodes added, or a new word end (ie a shorter version of a previous string)
+	    	if(i == wordLen - 1) {
+	    		//Determine whether this is a new ending
+	    		newEnd = !currNode.endsWord();
+	    		if(newNodes || newEnd) {
+	    			newWord = true;
+	    			currNode.setEndsWord(true);
+	    		}
+	    	}
+	    }
+	    
+	    if(newWord) {
+	    	size++;
+	    }
+	    return newWord;
 	}
 	
 	/** 
@@ -49,8 +111,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 */
 	public int size()
 	{
-	    //TODO: Implement this method
-	    return 0;
+	    return size;
 	}
 	
 	
@@ -59,7 +120,29 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	@Override
 	public boolean isWord(String s) 
 	{
-	    // TODO: Implement this method
+		String lS = s.toLowerCase();
+		int sLen = s.length();
+		//Make sure that the word is not nothing
+	    if(sLen == 0) {
+	    	return false;
+	    }
+		TrieNode currNode = root.getChild(lS.charAt(0));
+		//if we fail on the first node, just return false
+		if (currNode == null) {
+			return false;
+	    }
+		//Otherwise iterate through characters and check whether the nodes exist
+	    for (int i = 1; i < sLen; i++) {
+	    	currNode = currNode.getChild(lS.charAt(i));
+	    	if (currNode == null) {
+	    		//Next child not found, string doens't exist
+	    		return false;
+	    	}
+	    	if (i == sLen - 1 && currNode.endsWord()) {
+	    		//if we're at the last character, and no nulls, ad this ends a word, return true
+	    		return true;
+	    	}
+	    }
 		return false;
 	}
 
@@ -101,7 +184,55 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
     	 
-         return null;
+    	 //Initialize results
+    	 List<String> arr = new ArrayList<String>();
+    	 int wordCnt = 0;
+    	 TrieNode currNode = root;
+    	 
+    	 //Find the stem
+    	 String lS = prefix.toLowerCase();
+ 		int sLen = prefix.length();
+ 		//Make sure that the word is not nothing
+ 	    if(sLen == 0) {
+    		Queue<TrieNode> q = new LinkedList<TrieNode>();
+    		q.add(currNode);
+    		while(wordCnt < numCompletions && !q.isEmpty()) {
+    			currNode = q.remove();
+    			if(currNode.endsWord()) {
+    				arr.add(currNode.getText());
+    				wordCnt++;
+    			}
+				for(char c:currNode.getValidNextCharacters()) {
+					q.add(currNode.getChild(c));
+    			}
+    		}
+ 	    }
+ 		//Otherwise iterate through characters and check whether the nodes exist
+ 	    for (int i = 0; i < sLen; i++) {
+    		currNode = currNode.getChild(lS.charAt(i));
+ 	    	if (currNode == null) {
+ 	    		//Next child not found, string doens't exist
+ 	    		return arr;
+ 	    	}
+ 	    	if (i == sLen - 1) {
+ 	    		//if we're at the last character, and no nulls, attempt the autocomplete
+ 	    		Queue<TrieNode> q = new LinkedList<TrieNode>();
+ 	    		q.add(currNode);
+ 	    		while(wordCnt < numCompletions && !q.isEmpty()) {
+ 	    			currNode = q.remove();
+ 	    			if(currNode.endsWord()) {
+ 	    				arr.add(currNode.getText());
+ 	    				wordCnt++;
+ 	    			}
+    				for(char c:currNode.getValidNextCharacters()) {
+ 	    					q.add(currNode.getChild(c));
+ 	    			}
+ 	    			
+ 	    		}
+ 	    	}
+ 	    }
+ 	    
+        return arr;
      }
 
  	// For debugging

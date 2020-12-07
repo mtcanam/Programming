@@ -49,6 +49,7 @@ public class AutoCompleteDictionaryTrieTester {
 	
 	/** Test if the size method is working correctly.
 	 */
+
 	@Test
 	public void testSize()
 	{
@@ -159,7 +160,6 @@ public class AutoCompleteDictionaryTrieTester {
 		completions = smallDict.predictCompletions("x", 5);
 		assertEquals(0, completions.size());
 	}
-	
 	
 	
 	
