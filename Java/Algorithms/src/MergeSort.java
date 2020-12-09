@@ -18,7 +18,15 @@ public class MergeSort {
     }
 
     public static void main(String[] args) {
-
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+        arr.add(2);
+        arr.add(5);
+        arr.add(1);
+        arr.add(9);
+        arr.add(3);
+        arr.add(10);
+        ArrayList<Integer> sortedArr = sortArray(arr);
+        System.out.println(sortedArr);
     }
 
     //
