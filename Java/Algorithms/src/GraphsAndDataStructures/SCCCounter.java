@@ -3,8 +3,7 @@ package GraphsAndDataStructures;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class SCCCounter {
 
@@ -32,10 +31,9 @@ public class SCCCounter {
         for (int i = len; i > 0; i--){
             if (hmRev.get(i)!=null && !hmRev.get(i).getVisited()){
                 s = i;
-                hmRev = depthSearch(hmRev, i);
+                depthSearchRev(i);
             }
         }
-        System.out.println(hmRev);
         //Create a hashmap of the finishing times and node ids
         createTimeMap();
         //Reset number of nodes processed thus far
@@ -47,32 +45,55 @@ public class SCCCounter {
             int startNode = timeMap.get(i);
             if (hm.get(startNode)!=null && !hm.get(startNode).getVisited()){
                 s = startNode;
-                hm = depthSearch(hm, startNode);
+                depthSearch(startNode);
             }
         }
         //Count unique leader nodes
         createSCCMap();
-        System.out.println(SCCMap);
+        List<Integer> list = new ArrayList<Integer>(SCCMap.values());
+        Collections.sort(list,Collections.reverseOrder());
+        for (int i = 0; i < 5; i++){
+            System.out.println(list.get(i));
+        }
     }
 
-    private static HashMap<Integer, graphNode> depthSearch(HashMap<Integer, graphNode> map, int nodeID){
-        graphNode gn = map.get(nodeID);
+    private static void depthSearch(int nodeID){
+        graphNode gn = hm.get(nodeID);
         gn.setVisited(true);
-        gn.setLeaderNode(map.get(s));
+        gn.setLeaderNode(hm.get(s));
         ArrayList<Integer> arr = gn.getOutConn();
         int len = arr.size();
         if (len > 0) {
             for (int i = 0; i < len; i++) {
                 int outNode = arr.get(i);
-                if (!map.get(outNode).getVisited()) {
-                    map = depthSearch(map, arr.get(i));
+                if (!hm.get(outNode).getVisited()) {
+                    depthSearch(outNode);
                 }
             }
         }
         t++;
         gn.setFinishTime(t);
-        map.put(nodeID, gn);
-        return map;
+        hm.put(nodeID, gn);
+    }
+
+    private static void depthSearchRev(int nodeID){
+        graphNode gn = hmRev.get(nodeID);
+        gn.setVisited(true);
+        gn.setLeaderNode(hmRev.get(s));
+        ArrayList<Integer> arr = gn.getOutConn();
+        int len = arr.size();
+        if (len > 0) {
+            for (int i = 0; i < len; i++) {
+                int outNode = arr.get(i);
+                if (!hmRev.get(outNode).getVisited()) {
+                    depthSearchRev(outNode);
+                }
+
+            }
+        }
+        t++;
+        gn.setFinishTime(t);
+        hmRev.put(nodeID, gn);
     }
 
     private static void createTimeMap(){
@@ -213,7 +234,7 @@ class graphNode{
         return this.leaderNode.getNodeID();
     }
 
-    public String toString(){
-        return "Finish time: " + this.getFinishTime() + "\tLeader Node: " + String.valueOf(this.leaderNode.getNodeID()) + "\n";
-    }
+    //public String toString(){
+    //    return "Finish time: " + this.getFinishTime() + "\tLeader Node: " + String.valueOf(this.leaderNode.getNodeID()) + "\n";
+    //}
 }
