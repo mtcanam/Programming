@@ -1,7 +1,5 @@
 package DivideAndConquer;
 
-import java.util.ArrayList;
-
 //Works to multiply square matrices faster than the normal method
 //General method is to break the matrix into 4 submatrices (filling with rows/cols of zero if necessary)
 //Then calculate 7 multiplications and multiply together
@@ -10,30 +8,32 @@ public class StrassenMultiplier {
     public static void main(String[] args) {
         //Create the test matrix
         int[][] arr = new int[][] {
-                new int[] { 1, 2, 3, 4},
-                new int[] { 1, 2, 3, 4},
-                new int[] { 1, 2, 3, 4},
-                new int[] { 1, 2, 3, 4},
+                new int[] { 1, 2, 3},
+                new int[] { 1, 2, 3},
+                new int[] { 1, 2, 3},
         };
         Matrix A = new Matrix(arr);
         Matrix B = new Matrix(arr);
 
         Matrix C = MultiplyMatrices(A, B);
 
-        System.out.println(C);
+        //By default, the matrix output will be the same size as the input, so no need to print the buffered rows or cols (if any)
+        for (int i = 0; i < arr.length; i++){
+            for (int j = 0; j < arr.length; j++){
+                System.out.print(C.getEntry(i,j) + "\t");
+            }
+            System.out.print("\n");
+        }
     }
-
-
-
 
     private static Matrix MultiplyMatrices(Matrix A, Matrix B){
 
         if (A.getRowCount() == 2 | A.getColCount() == 2){
             int[][] finalArray = new int[2][2];
             finalArray[0][0] = A.getEntry(0,0) * B.getEntry(0,0) + A.getEntry(0,1) * B.getEntry(1,0);
-            finalArray[0][0] = A.getEntry(0,0) * B.getEntry(0,1) + A.getEntry(0,1) * B.getEntry(1,1);
-            finalArray[0][0] = A.getEntry(1,0) * B.getEntry(0,0) + A.getEntry(1,1) * B.getEntry(1,0);
-            finalArray[0][0] = A.getEntry(1,0) * B.getEntry(0,1) + A.getEntry(1,1) * B.getEntry(1,1);
+            finalArray[0][1] = A.getEntry(0,0) * B.getEntry(0,1) + A.getEntry(0,1) * B.getEntry(1,1);
+            finalArray[1][0] = A.getEntry(1,0) * B.getEntry(0,0) + A.getEntry(1,1) * B.getEntry(1,0);
+            finalArray[1][1] = A.getEntry(1,0) * B.getEntry(0,1) + A.getEntry(1,1) * B.getEntry(1,1);
             return new Matrix(finalArray);
         }
 
@@ -70,6 +70,7 @@ public class StrassenMultiplier {
 class Matrix {
     private int rowCount;
     private int colCount;
+    private int bufferedCount;
     private int arr[][];
 
     public Matrix(int inputArr[][]){
@@ -89,13 +90,13 @@ class Matrix {
                     if(j < colCount / 2) {
                         arr[i][j] = A11.getEntry(i, j);
                     }else{
-                        arr[i][j] = A12.getEntry(i, j + colCount / 2);
+                        arr[i][j] = A12.getEntry(i, j - colCount / 2);
                     }
                 }else{
                     if(j < colCount / 2) {
-                        arr[i][j] = A21.getEntry(i + rowCount / 2, j);
+                        arr[i][j] = A21.getEntry(i - rowCount / 2, j);
                     }else{
-                        arr[i][j] = A22.getEntry(i + rowCount / 2, j + colCount / 2);
+                        arr[i][j] = A22.getEntry(i - rowCount / 2, j - colCount / 2);
                     }
                 }
             }
@@ -152,14 +153,24 @@ class Matrix {
         return rowCount;
     }
 
+    public int[][] getArr() {
+        return arr;
+    }
+
     private void bufferMatrix(){
-        if (rowCount % 2 != 0) {
+        while (!isPowerOfTwo(rowCount)) {
             addRowOfZeroes();
         }
-        if (colCount % 2 != 0){
+        while (!isPowerOfTwo(colCount)){
             addColOfZeroes();
         }
     }
+
+    private boolean isPowerOfTwo(int i)
+    {
+        return (i & -i) == i;
+    }
+
     private void addRowOfZeroes(){
         int[][] newArray = new int[rowCount+1][colCount];
         for (int i = 0; i <= rowCount; i++){
@@ -172,13 +183,14 @@ class Matrix {
             }
         }
         arr = newArray;
+        rowCount++;
     }
 
     private void addColOfZeroes(){
         int[][] newArray = new int[rowCount][colCount+1];
-        for (int i = 0; i <= rowCount; i++){
-            for (int j = 0; j < colCount; j++){
-                if(j < rowCount) {
+        for (int i = 0; i < rowCount; i++){
+            for (int j = 0; j <= colCount; j++){
+                if(j < colCount) {
                     newArray[i][j] = arr[i][j];
                 }else{
                     newArray[i][j] = 0;
@@ -186,6 +198,7 @@ class Matrix {
             }
         }
         arr = newArray;
+        colCount++;
     }
 
 }
