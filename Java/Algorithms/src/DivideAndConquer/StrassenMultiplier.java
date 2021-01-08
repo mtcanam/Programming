@@ -27,6 +27,16 @@ public class StrassenMultiplier {
 
 
     private static Matrix MultiplyMatrices(Matrix A, Matrix B){
+
+        if (A.getRowCount() == 2 | A.getColCount() == 2){
+            int[][] finalArray = new int[2][2];
+            finalArray[0][0] = A.getEntry(0,0) * B.getEntry(0,0) + A.getEntry(0,1) * B.getEntry(1,0);
+            finalArray[0][0] = A.getEntry(0,0) * B.getEntry(0,1) + A.getEntry(0,1) * B.getEntry(1,1);
+            finalArray[0][0] = A.getEntry(1,0) * B.getEntry(0,0) + A.getEntry(1,1) * B.getEntry(1,0);
+            finalArray[0][0] = A.getEntry(1,0) * B.getEntry(0,1) + A.getEntry(1,1) * B.getEntry(1,1);
+            return new Matrix(finalArray);
+        }
+
         Matrix A11 = A.getQuadrant(0,0);
         Matrix A12 = A.getQuadrant(0,1);
         Matrix A21 = A.getQuadrant(1,0);
@@ -37,14 +47,7 @@ public class StrassenMultiplier {
         Matrix B21 = A.getQuadrant(1,0);
         Matrix B22 = A.getQuadrant(1,1);
 
-        if (A11.getRowCount() == 1 | A11.getColCount() == 1){
-            int[][] finalArray = new int[2][2];
-            finalArray[0][0] = A.getEntry(0,0) * B.getEntry(0,0) + A.getEntry(0,1) * B.getEntry(1,0);
-            finalArray[0][0] = A.getEntry(0,0) * B.getEntry(0,1) + A.getEntry(0,1) * B.getEntry(1,1);
-            finalArray[0][0] = A.getEntry(1,0) * B.getEntry(0,0) + A.getEntry(1,1) * B.getEntry(1,0);
-            finalArray[0][0] = A.getEntry(1,0) * B.getEntry(0,1) + A.getEntry(1,1) * B.getEntry(1,1);
-            return new Matrix(finalArray);
-        }
+
 
         Matrix M1 = MultiplyMatrices(A11.add(A22), B11.add(B22));
         Matrix M2 = MultiplyMatrices(A21.add(A22), B11);
@@ -105,7 +108,7 @@ class Matrix {
         int[][] quadArr = new int[rowCount/2][colCount/2];
         for (int i = row*rowCount/2; i < (1 + row) * rowCount / 2; i++){
             for (int j = col*colCount/2; j < (1 + col) * colCount / 2; j++){
-                quadArr[i][j] = arr[i][j];
+                quadArr[i - row*rowCount/2][j - col*colCount/2] = arr[i][j];
             }
         }
         return new Matrix(quadArr);
