@@ -151,18 +151,11 @@ public class PrimsMST {
 
 }
 
-class Vertex {
-    private int NodeID;
-    private HashMap<Integer, Integer> Connections;
+class Vertex extends ObjectLibrary.Vertex {
     private int key;
 
-    public Vertex(int id){
-        NodeID = id;
-        Connections = new HashMap<Integer, Integer>();
-    }
-
-    public int getNodeID() {
-        return NodeID;
+    public Vertex(int id) {
+        super(id);
     }
 
     public void setKey(int key) {
@@ -173,13 +166,6 @@ class Vertex {
         return key;
     }
 
-    public HashMap<Integer, Integer> getConnections() {
-        return Connections;
-    }
-
-    public void setConnections(HashMap<Integer, Integer> connections) {
-        Connections = connections;
-    }
 }
 
 class SortByWeight implements Comparator<Vertex>
