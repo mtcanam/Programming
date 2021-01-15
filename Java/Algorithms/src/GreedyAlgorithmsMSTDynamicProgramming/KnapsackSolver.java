@@ -29,7 +29,7 @@ public class KnapsackSolver {
     private static Map<String, Long> solMap;
 
     public static void main(String[] args) {
-        //Read in the data
+        //Read in the data and initialize the solution map
         try {
             readData();
         } catch (IOException e) {
@@ -39,20 +39,21 @@ public class KnapsackSolver {
         //Iterate through the items, calling the solve function for each sackItem in sackItems
         for(int i = 0; i < itemCount; i++){
             SackItem currItem = sackItems.get(i);
-            solveProblem(i, currItem.getValue(), currItem.getWeight(), sackCapacity);
+            solveProblem(i, currItem, sackCapacity);
         }
         //Get the final solution from the solution array
         String finalKey = itemCount - 1 + "-" + sackCapacity;
         System.out.println(solMap.get(finalKey));
     }
 
-    private static long solveProblem(int item, long val, long weight, long capacity){
+    private static long solveProblem(int item, SackItem currItem, long capacity){
         //In this function, we need to compare the two subproblems noted above
+
         //First we create the degenerate solution
         if(item == 0){
             long degenSol = 0;
-            if (weight <= capacity){
-                degenSol = val;
+            if (currItem.getWeight() <= capacity){
+                degenSol = currItem.getValue();
             }
             String newKey = item + "-" + capacity;
             solMap.put(newKey,degenSol);
@@ -60,29 +61,34 @@ public class KnapsackSolver {
         }
 
         SackItem prevItem = sackItems.get(item - 1);
-        //Now test teh obvious solution. If we have a weight larger than the capacity, then we can just take the prev solution
+
+        //If we are not at the degenerate solution, we need to check the two subproblems noted in the description
+        //The precursor check for the first subproblem is to ensure we even have room for this new item at this capacity
         long sol1 = 0L;
-        if(weight <= capacity) {
-            //Number 1 is where we use the current object, then recurse on the remaining capacity
-            //First we need to find the solution with remaining capacity or calculate it
-            String residKey = item - 1 + "-" + String.valueOf(capacity - weight);
+        if(currItem.getWeight() <= capacity) {
+            //If we have enough room, we use the current object, then recurse on the remaining capacity
+            //First check if this solution already exists in the solution map. Otherwise, calculate it recursively.
+            String residKey = item - 1 + "-" + String.valueOf(capacity - currItem.getWeight());
             long residSol = 0L;
             if (solMap.containsKey(residKey)) {
                 residSol = solMap.get(residKey);
             } else {
-                residSol = solveProblem(item - 1, prevItem.getValue(), prevItem.getWeight(), capacity - weight);
+                residSol = solveProblem(item - 1, prevItem, capacity - currItem.getWeight());
             }
-            //Then, we can calculate the first subproblem
-            sol1 = val + residSol;
+            //After the calculation of the residual capacity value, we can add it to the current value to get the first option
+            sol1 = currItem.getValue() + residSol;
         }
-        //Number 2 is the solution without the current object
+        //Number 2 is the solution without the current object. This means we just take the solution at the current capacity minus this item.
+        //Again, calculate it recursively if not already calculated and saved in the map.
         String prevSolKey = (item - 1) + "-" + capacity;
         long sol2 = 0L;
         if (solMap.containsKey(prevSolKey)){
             sol2 = solMap.get(prevSolKey);
         }else {
-            sol2 = solveProblem(item - 1, prevItem.getValue(), prevItem.getWeight(), capacity);
+            sol2 = solveProblem(item - 1, prevItem, capacity);
         }
+        //Take the max value of the two options, add the solution to the map, and return the value.
+        //The return is only relevant for the recursive calculations. Otherwise, we can use the solution map to get whichever we want.
         long maxSol = Math.max(sol1, sol2);
         String newKey = item + "-" + capacity;
         solMap.put(newKey,maxSol);
@@ -132,4 +138,5 @@ class SackItem {
     public long getWeight() {
         return weight;
     }
+
 }
