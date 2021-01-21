@@ -130,31 +130,35 @@ class GraphReaderTest {
 
     @Test
     void readDataAndFormGraph(){
-        testGraph.getNode(1);
+        Graph g1 = new Graph();
+        Graph g2 = new Graph();
+        Graph g3 = new Graph();
+        Graph g4 = new Graph();
+
         GraphReader gr1 = new GraphReader("APSPTest1");
         try {
-            Graph g1 = gr1.readDataAndFormGraph();
+            g1 = gr1.readDataAndFormGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         GraphReader gr2 = new GraphReader("APSPTest2");
         try {
-            Graph g2 = gr2.readDataAndFormGraph();
+            g2 = gr2.readDataAndFormGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         GraphReader gr3 = new GraphReader("APSPTest3");
         try {
-            Graph g3 = gr3.readDataAndFormGraph();
+            g3 = gr3.readDataAndFormGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         GraphReader gr4 = new GraphReader("APSPTest4");
         try {
-            Graph g4 = gr4.readDataAndFormGraph();
+            g4 = gr4.readDataAndFormGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }

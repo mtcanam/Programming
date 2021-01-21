@@ -75,6 +75,7 @@ public class DijkstraSolver {
 
             //Now need to update the distances for all vertices connected to source vertex
             //If the min distance here is already the max value, then no more nodes are connected, so no need to update
+
             if (minDist != Long.MAX_VALUE) {
                 updateDistances(minID, minDist);
             }
@@ -98,16 +99,18 @@ public class DijkstraSolver {
         //Iterate over all connections, and take the distance to the supplied vertex, adding the path length to get the
         //potential new distance. If we already have a lower distance from a previous path, ignore this.
         for (int id: currConn.keySet()){
-            long currDist = vertMap.get(id).getDistance();
-            long altDist = dist + currConn.get(id);
-            if (altDist < currDist){
-                //If we need to update this vertex, get the original vert from the map, remove from heap, change, and
-                //re-add to both map and heap.
-                DijkstraHeapVertex changedVert = vertMap.get(id);
-                vertHeap.remove(changedVert);
-                changedVert.setDistance(altDist);
-                vertMap.put(id, changedVert);
-                vertHeap.add(changedVert);
+            if (unvisitedVertices.contains(id)) {
+                long currDist = vertMap.get(id).getDistance();
+                long altDist = dist + currConn.get(id);
+                if (altDist < currDist) {
+                    //If we need to update this vertex, get the original vert from the map, remove from heap, change, and
+                    //re-add to both map and heap.
+                    DijkstraHeapVertex changedVert = vertMap.get(id);
+                    vertHeap.remove(changedVert);
+                    changedVert.setDistance(altDist);
+                    vertMap.put(id, changedVert);
+                    vertHeap.add(changedVert);
+                }
             }
         }
     }
@@ -139,6 +142,12 @@ class DijkstraHeapVertex{
 class SortByPathLength implements Comparator<DijkstraHeapVertex>{
     public int compare(DijkstraHeapVertex a, DijkstraHeapVertex b) {
         //Sorts small to large for distances
-        return (int) (a.getDistance() - b.getDistance());
+        long distA = a.getDistance();
+        long distB = b.getDistance();
+        if (distA < distB){
+            return -1;
+        }else{
+            return 1;
+        }
     }
 }

@@ -81,8 +81,6 @@ public class BellmanFordSolver {
             shortestPaths[i] = solArray[vertexCount - 1][i];
         }
 
-
-
         //Return string of min path
         if (!negativeCycleDetected){
             return "Success";
