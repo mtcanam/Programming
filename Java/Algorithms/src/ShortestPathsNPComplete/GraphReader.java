@@ -40,7 +40,10 @@ public class GraphReader {
                 parts = line.split("\\s");
                 int vert1ID = Integer.parseInt(parts[0]);
                 int vert2ID = Integer.parseInt(parts[1]);
-                int weight = Integer.parseInt(parts[2]);
+                int weight = 0;
+                if (parts.length == 3) {
+                    weight = Integer.parseInt(parts[2]);
+                }
                 //Create vertices 1 and 2
                 Vertex vert1 = new Vertex(vert1ID);
                 HashMap<Integer,Integer> conn = new HashMap<>();
