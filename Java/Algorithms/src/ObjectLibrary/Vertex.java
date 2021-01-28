@@ -24,6 +24,14 @@ public class Vertex {
         return Connections;
     }
 
+    public ArrayList<Integer> getConnectionVertices(){
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+        for (int key : Connections.keySet()) {
+            arr.add(key);
+        }
+        return arr;
+    }
+
     public void setConnections(HashMap<Integer, Integer> connections) {
         Connections = connections;
     }

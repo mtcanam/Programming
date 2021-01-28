@@ -58,6 +58,7 @@ public class Graph {
                 graphNodes.put(vertID, mapVert);
             }
         }
+
         //3. Put the node in the map, incrementing the node count if new
         if (graphNodes.containsKey(id)) {
             graphNodes.put(id, vert);
@@ -87,6 +88,28 @@ public class Graph {
             }
         }
         //3. Put the node in the map, incrementing the node count if new
+        if (graphNodes.containsKey(id)) {
+            graphNodes.put(id, vert);
+        }else{
+            graphNodes.put(id, vert);
+            nodeCount++;
+        }
+    }
+
+    //This method assumes we want to use the connections that already exist when setting vertex
+    public void setAndMergeNodeNoInboundVertices(int id, Vertex vert){
+        //Need to check whether this vertex exists already
+        if (graphNodes.containsKey(id)){
+            //This vertex already exists, we can add the connections from the original vertex
+            Vertex oldVert = graphNodes.get(id);
+            HashMap<Integer, Integer> oldConn = oldVert.getConnections();
+            HashMap<Integer, Integer> newConn = vert.getConnections();
+            for (int key:oldConn.keySet()){
+                newConn.put(key, oldConn.get(key));
+            }
+            vert.setConnections(newConn);
+        }
+        //Put the node in the map, incrementing the node count if new
         if (graphNodes.containsKey(id)) {
             graphNodes.put(id, vert);
         }else{

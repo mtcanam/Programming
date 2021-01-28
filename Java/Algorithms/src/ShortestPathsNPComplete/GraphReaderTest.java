@@ -137,28 +137,32 @@ class GraphReaderTest {
 
         GraphReader gr1 = new GraphReader("APSPTest1");
         try {
-            g1 = gr1.readDataAndFormGraph();
+            gr1.readDataAndFormGraph();
+            g1 = gr1.getInputGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         GraphReader gr2 = new GraphReader("APSPTest2");
         try {
-            g2 = gr2.readDataAndFormGraph();
+            gr2.readDataAndFormGraph();
+            g2 = gr2.getInputGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         GraphReader gr3 = new GraphReader("APSPTest3");
         try {
-            g3 = gr3.readDataAndFormGraph();
+            gr3.readDataAndFormGraph();
+            g3 = gr3.getInputGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         GraphReader gr4 = new GraphReader("APSPTest4");
         try {
-            g4 = gr4.readDataAndFormGraph();
+            gr4.readDataAndFormGraph();
+            g4 = gr4.getInputGraph();
         } catch (IOException e) {
             e.printStackTrace();
         }
