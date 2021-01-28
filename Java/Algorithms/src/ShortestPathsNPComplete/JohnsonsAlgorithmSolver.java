@@ -48,9 +48,12 @@ public class JohnsonsAlgorithmSolver {
         Graph inputGraph2 = new Graph();
         Graph inputGraph3 = new Graph();
         try {
-            inputGraph1 = graphReader.readDataAndFormGraph();
-            inputGraph2 = graphReader2.readDataAndFormGraph();
-            inputGraph3 = graphReader3.readDataAndFormGraph();
+            graphReader.readDataAndFormGraph();
+            inputGraph1 = graphReader.getInputGraph();
+            graphReader2.readDataAndFormGraph();
+            inputGraph2 = graphReader2.getInputGraph();
+            graphReader3.readDataAndFormGraph();
+            inputGraph3 = graphReader3.getInputGraph();
 
         } catch (IOException e) {
             e.printStackTrace();

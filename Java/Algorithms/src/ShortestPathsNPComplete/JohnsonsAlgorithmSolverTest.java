@@ -30,11 +30,16 @@ class JohnsonsAlgorithmSolverTest {
         inputGraph4 = new Graph();
         inputGraph5 = new Graph();
         try {
-            inputGraph1 = graphReader.readDataAndFormGraph();
-            inputGraph2 = graphReader2.readDataAndFormGraph();
-            inputGraph3 = graphReader3.readDataAndFormGraph();
-            inputGraph4 = graphReader4.readDataAndFormGraph();
-            inputGraph5 = graphReader5.readDataAndFormGraph();
+            graphReader.readDataAndFormGraph();
+            graphReader2.readDataAndFormGraph();
+            graphReader3.readDataAndFormGraph();
+            graphReader4.readDataAndFormGraph();
+            graphReader5.readDataAndFormGraph();
+            inputGraph1 = graphReader.getInputGraph();
+            inputGraph2 = graphReader2.getInputGraph();
+            inputGraph3 = graphReader3.getInputGraph();
+            inputGraph4 = graphReader4.getInputGraph();
+            inputGraph5 = graphReader5.getInputGraph();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -48,9 +48,6 @@ public class BitCluster {
         BitSet bs = nodes.get(i);
         if (map.containsKey(bs)){
             ArrayList<Integer> arr = map.get(bs);
-            if (arr.size() == 0) {
-
-            }
             for (int j = 0; j < arr.size();j++){
                 nodeClusters.Union(i,arr.get(j));
             }

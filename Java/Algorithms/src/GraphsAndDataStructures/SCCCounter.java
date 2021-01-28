@@ -120,7 +120,7 @@ public class SCCCounter {
     }
 
     private static void readData() throws IOException {
-        String filePath = "./data/SCC.txt";
+        String filePath = "./data/SCCTest.txt";
         HashMap<Integer, graphNode> map = new HashMap<Integer, graphNode>();
         HashMap<Integer, graphNode> mapRev = new HashMap<Integer, graphNode>();
         int maxNode = 0;
