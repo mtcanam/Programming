@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author Michael
- *
- */
-module algorithms {
-}
