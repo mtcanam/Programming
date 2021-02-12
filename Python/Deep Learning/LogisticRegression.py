@@ -2,9 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 import scipy
+import sklearn
 
-from PIL import Image
-from scipy import ndimage
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
 def logistic_regression(X_train, Y_train, X_test, Y_test, num_iterations=2000, learning_rate=0.5):
@@ -102,4 +104,14 @@ def predict(w, b, X):
 
 if __name__ == '__main__':
     #Input sample data
-    logistic_regression()
+    X, y = datasets.load_breast_cancer(return_X_y=True)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33, random_state = 42)
+    d = logistic_regression(X_train.T, y_train.T, X_test.T, y_test.T, num_iterations = 2000, learning_rate = 0.01)
+    y_pred_test = d["Y_prediction_test"]
+    y_pred_train = d["Y_prediction_train"]
+    cm_train = confusion_matrix(y_train.T, np.squeeze(y_pred_train))
+    cm_test = confusion_matrix(y_test.T, np.squeeze(y_pred_test))
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm_train, display_labels=("Malignant", "Benign"))
+    disp.plot(cmap='plasma')
+    plt.show()
+
