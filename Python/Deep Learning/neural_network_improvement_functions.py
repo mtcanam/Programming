@@ -320,3 +320,66 @@ def gradient_check_n(parameters, gradients, X, Y, epsilon=1e-7):
             "\033[92m" + "Your backward propagation works perfectly fine! difference = " + str(difference) + "\033[0m")
 
     return difference
+
+
+def update_parameters(parameters, grads, learning_rate):
+    """
+    Purpose: Updates parameters after forward and backward propagation steps
+
+    Inputs:
+    parameters -- dictionary of weights and biases
+    grads -- a dictionary of gradients (dW, db, dA)
+    X -- the input layer of the model
+    learning_rate -- the learning rate of the model (lower is slower but less oscillation)
+
+    Outputs:
+    parameters -- updated dictionary of weights and biases
+    """
+
+    L = len(parameters) // 2  # number of layers in the neural network
+
+    # Update rule for each parameter. Use a for loop.
+    for l in range(L):
+        parameters["W" + str(l + 1)] = parameters["W" + str(l + 1)] - learning_rate * grads["dW" + str(l + 1)]
+        parameters["b" + str(l + 1)] = parameters["b" + str(l + 1)] - learning_rate * grads["db" + str(l + 1)]
+    return parameters
+
+
+def random_mini_batches(X, Y, mini_batch_size=64):
+    """
+    Purpose: split X and Y into mini-batches for mini-batched gradient descent
+
+    Inputs:
+    X -- the input layer of the model
+    Y -- The target vector of the model
+    mini_batch_size -- the number of samples to include in each mini batch (generally a power of 2)
+
+    Outputs:
+    mini_batches -- a list of tuples of ndarrays containing (Mini batches -> X, Y -> arrays)
+    """
+
+    m = X.shape[1]  # number of training examples
+    mini_batches = []
+
+    # Step 1: Shuffle (X, Y)
+    permutation = list(np.random.permutation(m))
+    shuffled_X = X[:, permutation]
+    shuffled_Y = Y[:, permutation].reshape((1, m))
+
+    # Step 2: Partition (shuffled_X, shuffled_Y). Minus the end case.
+    num_complete_minibatches = math.floor(m / mini_batch_size)
+    for k in range(0, num_complete_minibatches):
+        mini_batch_X = shuffled_X[:, k * mini_batch_size: (k + 1) * mini_batch_size]
+        mini_batch_Y = shuffled_Y[:, k * mini_batch_size: (k + 1) * mini_batch_size]
+        mini_batch = (mini_batch_X, mini_batch_Y)
+        mini_batches.append(mini_batch)
+
+    # Handling the end case (last mini-batch < mini_batch_size)
+    if m % mini_batch_size != 0:
+        mini_batch_X = shuffled_X[:, k * mini_batch_size: shuffled_X.shape[1]]
+        mini_batch_Y = shuffled_Y[:, k * mini_batch_size: shuffled_Y.shape[1]]
+        mini_batch = (mini_batch_X, mini_batch_Y)
+        mini_batches.append(mini_batch)
+
+    return mini_batches
+
