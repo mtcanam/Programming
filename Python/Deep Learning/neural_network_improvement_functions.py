@@ -383,3 +383,54 @@ def random_mini_batches(X, Y, mini_batch_size=64):
 
     return mini_batches
 
+
+def initialize_velocity(parameters):
+    """
+    Purpose: initialize arrays for momentum optimization
+
+    Inputs:
+    parameters -- a dictionary of weights and biases
+
+    Outputs:
+    v -- a dictionary of exponentially weighted averages for the gradients of W and b
+    """
+
+    L = len(parameters) // 2  # number of layers in the neural networks
+    v = {}
+
+    # Initialize velocity
+    for l in range(L):
+        Wl = parameters["W" + str(l + 1)]
+        bl = parameters["b" + str(l + 1)]
+        v["dW" + str(l + 1)] = np.zeros((Wl.shape[0], Wl.shape[1]))
+        v["db" + str(l + 1)] = np.zeros((bl.shape[0], 1))
+
+    return v
+
+
+def initialize_adam(parameters):
+    """
+    Purpose: initialize arrays for Adam optimization
+
+    Inputs:
+    parameters -- a dictionary of weights and biases
+
+    Outputs:
+    v -- a dictionary of exponentially weighted averages for the gradients of W and b
+    s -- a dictionary of exponentially weighted averages for the squared gradients of W and b
+    """
+
+    L = len(parameters) // 2  # number of layers in the neural networks
+    v = {}
+    s = {}
+
+    # Initialize v, s. Input: "parameters". Outputs: "v, s".
+    for l in range(L):
+        Wl = parameters["W" + str(l + 1)]
+        bl = parameters["b" + str(l + 1)]
+        v["dW" + str(l + 1)] = np.zeros((Wl.shape[0], Wl.shape[1]))
+        v["db" + str(l + 1)] = np.zeros((bl.shape[0], 1))
+        s["dW" + str(l + 1)] = np.zeros((Wl.shape[0], Wl.shape[1]))
+        s["db" + str(l + 1)] = np.zeros((bl.shape[0], 1))
+
+    return v, s
